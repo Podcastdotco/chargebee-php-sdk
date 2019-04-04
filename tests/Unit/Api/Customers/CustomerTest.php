@@ -275,6 +275,20 @@ class CustomerTest extends TestCase
         $this->assertEquals($expected, $customer->contacts('4gkYnd21ouvW', []));
     }
 
+    /** @test */
+    public function should_create_subscription()
+    {
+        $expected = $this->getContent(sprintf('%s/data/responses/customer_subscription_created.json', __DIR__));
+
+        $customer = $this->getApiMock();
+        $customer->expects($this->once())
+            ->method('post')
+            ->with('https://123456789.chargebee.com/api/v2/customers/4gkYnd21ouvW/subscriptions', [])
+            ->will($this->returnValue($expected));
+
+        $this->assertEquals($expected, $customer->createSubscription('4gkYnd21ouvW', []));
+    }
+
     /**
      * @return string
      */

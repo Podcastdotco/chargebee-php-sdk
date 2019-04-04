@@ -272,4 +272,20 @@ class Customer extends AbstractApi
 
         return $this->get($url, $resolver->resolve($parameters), $headers);
     }
+
+    /**
+     * @param string $id
+     * @param array  $data
+     * @param array  $headers
+     *
+     * @return array|string
+     *
+     * @throws Exception
+     */
+    public function createSubscription(string $id, array $data = [], array $headers = [])
+    {
+        $url = $this->url('customers/%s/subscriptions', $id);
+
+        return $this->post($url, $data, $headers);
+    }
 }
