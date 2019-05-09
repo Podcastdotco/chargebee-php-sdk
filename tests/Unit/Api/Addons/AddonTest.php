@@ -3,6 +3,7 @@
 namespace Tests\Unit\Api\Addons;
 
 use NathanDunn\Chargebee\Api\Addons\Addon;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Tests\Unit\Api\TestCase;
 
 class AddonTest extends TestCase
@@ -103,6 +104,50 @@ class AddonTest extends TestCase
             ->will($this->returnValue($expected));
 
         $this->assertEquals($expected, $addon->unarchive('ssl'));
+    }
+
+    /**
+     * @test
+     * @dataProvider filters_provider
+     */
+    public function it_should_filter_addons($filters)
+    {
+        $expected = $this->getContent(sprintf('%s/data/responses/addon_list.json', __DIR__));
+
+        $addon = $this->getApiMock();
+        $addon->expects($this->once())
+            ->method('get')
+            ->with('https://123456789.chargebee.com/api/v2/addons', $filters)
+            ->will($this->returnValue($expected));
+
+        $this->assertEquals($expected, $addon->list($filters));
+    }
+
+    /**
+     * @return array
+     */
+    public function filters_provider(): array
+    {
+        return [
+            'status' => [['status[is]' => 'active']],
+        ];
+    }
+
+    /**
+     * @test
+     */
+    public function should_reject_unregistered_filters()
+    {
+        $filters = ['unkown' => 'field'];
+
+        $expected = $this->getContent(sprintf('%s/data/responses/addon_list.json', __DIR__));
+
+        $addon = $this->getApiMock();
+        $addon->expects($this->never())
+            ->method('get');
+
+        $this->expectException(UndefinedOptionsException::class);
+        $addon->list($filters);
     }
 
     /**
