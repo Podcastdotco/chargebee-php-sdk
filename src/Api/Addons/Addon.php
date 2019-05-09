@@ -19,6 +19,9 @@ class Addon extends AbstractApi
     {
         $resolver = $this->createOptionsResolver();
 
+        $resolver->setDefined('status[is]')
+            ->setAllowedTypes('status[is]', 'string');
+
         $url = $this->url('addons');
 
         return $this->get($url, $resolver->resolve($parameters), $headers);
