@@ -34,7 +34,7 @@ class TestCase extends PHPUnitTestCase
     /**
      * Set up test case.
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->builder = new Builder(
             self::$key, new MockClient(), MessageFactoryDiscovery::find(), StreamFactoryDiscovery::find()
